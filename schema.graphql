@@ -1,0 +1,30 @@
+type Query {
+  profile: Profile!
+}
+
+type Profile {
+  name: String!
+  description: String!
+  links: [Link!]!
+  skills: [String!]!
+  experience: [Experience!]!
+  projects: [Link!]!
+}
+
+type Link {
+  name: String!
+  url: String!
+}
+
+type Experience {
+  company: String!
+  role: String!
+  period: Period!
+  achievements: [String!]!
+}
+
+type Period {
+  from: String!
+  to: String
+  current: Boolean!
+}

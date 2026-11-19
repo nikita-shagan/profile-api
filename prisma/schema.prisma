@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:../data/profile.db"
+}
+
+model Profile {
+  id          Int           @id
+  name        String
+  description String
+  links       ProfileLink[]
+  skills      Skill[]
+  experience  Experience[]
+  projects    Project[]
+}
+
+model ProfileLink {
+  id        Int     @id
+  name      String
+  url       String
+  profileId Int
+  profile   Profile @relation(fields: [profileId], references: [id])
+}
+
+model Skill {
+  id        Int     @id
+  name      String
+  profileId Int
+  profile   Profile @relation(fields: [profileId], references: [id])
+}
+
+model Experience {
+  id           Int           @id
+  company      String
+  role         String
+  startMonth   String
+  endMonth     String?
+  profileId    Int
+  profile      Profile       @relation(fields: [profileId], references: [id])
+  achievements Achievement[]
+}
+
+model Achievement {
+  id           Int        @id
+  text         String
+  experienceId Int
+  experience   Experience @relation(fields: [experienceId], references: [id])
+}
+
+model Project {
+  id        Int     @id
+  name      String
+  url       String
+  profileId Int
+  profile   Profile @relation(fields: [profileId], references: [id])
+}
