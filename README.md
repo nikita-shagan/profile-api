@@ -1,5 +1,7 @@
 # Profile API
 
+[Демо на Vercel](https://profile-api-gamma.vercel.app/graphql).
+
 `docker compose up --build` → [Apollo Sandbox](http://localhost:3000/graphql).
 При старте Prisma создаёт SQLite и применяет миграции с данными. Повторный запуск не дублирует записи.
 

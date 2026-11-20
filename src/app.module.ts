@@ -1,3 +1,5 @@
+import { copyFileSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
@@ -10,14 +12,23 @@ import { ProfileResolver } from './profile/profile.resolver';
 @Module({
   imports: [GraphQLModule.forRoot<ApolloDriverConfig>({
     driver: ApolloDriver,
-    typePaths: ['schema.graphql'],
+    typeDefs: readFileSync(join(__dirname, '../schema.graphql'), 'utf8'),
     playground: false,
     introspection: true,
     plugins: [ApolloServerPluginLandingPageLocalDefault({ embed: true })],
   })],
   providers: [
     ProfileResolver,
-    { provide: ProfileRepository, useFactory: () => new PrismaProfiles(new PrismaClient()) },
+    {
+      provide: ProfileRepository,
+      useFactory: () => {
+        if (!process.env.VERCEL) return new PrismaProfiles(new PrismaClient());
+
+        const database = '/tmp/profile.db';
+        copyFileSync(join(__dirname, '../data/profile.db'), database);
+        return new PrismaProfiles(new PrismaClient({ datasourceUrl: `file:${database}` }));
+      },
+    },
     {
       provide: GetProfile, inject: [ProfileRepository],
       useFactory: (profiles: ProfileRepository) => new GetProfile(profiles),

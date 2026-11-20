@@ -1,0 +1,15 @@
+{
+  "buildCommand": "npm run lint && prisma generate && prisma migrate deploy",
+  "functions": {
+    "src/main.ts": {
+      "includeFiles": "{schema.graphql,data/profile.db}"
+    }
+  },
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/graphql",
+      "permanent": false
+    }
+  ]
+}
