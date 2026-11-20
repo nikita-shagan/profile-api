@@ -1,4 +1,4 @@
-import { copyFileSync, readFileSync } from 'node:fs';
+import { readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ApolloServerPluginLandingPageLocalDefault } from '@apollo/server/plugin/landingPage/default';
 import { ApolloDriver, type ApolloDriverConfig } from '@nestjs/apollo';
@@ -25,7 +25,7 @@ import { ProfileResolver } from './profile/profile.resolver';
         if (!process.env.VERCEL) return new PrismaProfiles(new PrismaClient());
 
         const database = '/tmp/profile.db';
-        copyFileSync(join(__dirname, '../data/profile.db'), database);
+        writeFileSync(database, readFileSync(join(__dirname, '../data/profile.db')));
         return new PrismaProfiles(new PrismaClient({ datasourceUrl: `file:${database}` }));
       },
     },
